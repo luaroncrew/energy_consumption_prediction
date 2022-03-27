@@ -26,7 +26,7 @@ What was the working plan?
 
 
 ## ETL
-we have 1 000 000 000 lines of temperature data so there were some steps of transformation:
+we have 43,3 millions lines of temperature data so there were some steps of transformation:
 * make sure this is only french stations. Solution:
     * find borders long and lat values
     * exclude any line when coordinates are not in these ranges
@@ -36,4 +36,7 @@ we have 1 000 000 000 lines of temperature data so there were some steps of tran
 
 
 ## Analysis
+
+## Useful information
+* after filtering all the stations by an altitude and longitude, only 39,58M out of 43,3M are valid for analysis
 
