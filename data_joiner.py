@@ -6,7 +6,7 @@ DATE_INDEX = 2
 HOUR_INDEX = 3
 
 # for weather data
-T_INDEX = -1
+T_INDEX = -2
 C_DATE_INDEX = 4
 
 # consumption data transformation
@@ -36,34 +36,31 @@ file.close()
 
 # now let's deal with temperatures (hard level)
 
-file = open('data/SE2018.csv', mode='r', encoding='utf-8')
+file = open('filtered_stations.csv', mode='r', encoding='utf-8')
 reader = csv.reader(file, delimiter=';')
-
+next(reader)
 temperatures_per_hour = {}
+k = 0
 for raw in reader:
+    if not raw:
+        continue
+    k += 1
+    if k == 1_000_000:
+        break
     datetime = raw[C_DATE_INDEX]
     hour_value = datetime.split(' ')[1]
     minutes = hour_value.split(':')[1]
     if minutes == '00':
-        temperature = float(raw[T_INDEX])
+        try:
+            temperature = float(raw[T_INDEX])
+        except Exception:
+            continue
         date = datetime.split(' ')[0]
         hour = int(hour_value.split(':')[0])
         if temperatures_per_hour.get(hour):
-            date_temperatures = temperatures_per_hour[hour]
-            date_temperatures[date].append(temperature)
+            if temperatures_per_hour[hour].get(date):
+                temperatures_per_hour[hour][date].append(temperature)
+            else:
+                temperatures_per_hour[hour][date] = [temperature]
         else:
-            date_temperatures = {date: [temperature]}
-
-for hour in temperatures_per_hour.values():
-    for temperatures in hour.items():
-
-
-
-
-
-# output_file = open('hourly_consumption_temperature.csv', mode='w',
-#                    encoding='utf-8')
-# fieldnames = ['time', 'temperature', 'consumption']
-# writer = csv.DictWriter(output_file, fieldnames=fieldnames)
-# writer.writeheader()
-
+            temperatures_per_hour[hour] = {date: [temperature]}
