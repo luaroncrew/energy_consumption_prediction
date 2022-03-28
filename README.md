@@ -2,12 +2,12 @@
 
 Eliot Veyret, Makarov Kirill
 
-to make this predictive model we used open-data sources for 2018 year
+to make this predictive model we used open-data sources for year 2018
 
-temperature data taken from: 
+temperature data taken from METEOFRANCE:
 https://meteonet.umr-cnrm.fr/dataset/data/SE/ground_stations/
 
-this data is verified, we compared it with other archive data sources, like this one.
+this data is verified, we compared it with other weather archive data sources, like this one.
 https://www.infoclimat.fr/observations-meteo/archives/21/juin/2018/grenoble-le-versoud/07487.html
 
 energy consumption data from:
