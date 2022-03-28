@@ -32,6 +32,32 @@ for raw in reader:
 
 # we have a total of 365 consumptions for each hour
 
+file.close()
+
+# now let's deal with temperatures (hard level)
+
+file = open('data/SE2018.csv', mode='r', encoding='utf-8')
+reader = csv.reader(file, delimiter=';')
+
+temperatures_per_hour = {}
+for raw in reader:
+    datetime = raw[C_DATE_INDEX]
+    hour_value = datetime.split(' ')[1]
+    minutes = hour_value.split(':')[1]
+    if minutes == '00':
+        temperature = float(raw[T_INDEX])
+        date = datetime.split(' ')[0]
+        hour = int(hour_value.split(':')[0])
+        if temperatures_per_hour.get(hour):
+            date_temperatures = temperatures_per_hour[hour]
+            date_temperatures[date].append(temperature)
+        else:
+            date_temperatures = {date: [temperature]}
+
+for hour in temperatures_per_hour.values():
+    for temperatures in hour.items():
+
+
 
 
 
