@@ -30,9 +30,39 @@ we have 43,3 millions lines of temperature data so there were some steps of tran
 * make sure this is only french stations. Solution:
     * find borders long and lat values
     * exclude any line when coordinates are not in these ranges
-* filter by 15-minutes step ranges to then join with RTE (company name) data
-* find average temperatures from all the stations for every 15 minute step
-* create a new csv file containing on each line average consumption and average temperature in France
+* make a consumption dictionnary like 
+   ```python consumptions = {
+      '1h00': [12321,123213,123,12,213213....,213123], # len(consumptions['1h00']) will be = 365 (for each day)
+      '2h00': [123213,123213,21312....,123123] # same as for 1h00
+      ...
+      '23h00' : [123213,123213,21312....,123123] # same as for 1h00
+      }`
+* make a dictionnary like 
+   ```python temperatures = {
+      '1h00': {
+         '2018/01/01': [32, 34, 32, ...., 21, 32], # data from all stations in france.
+         '2018/01/02': [34, 35, ...., 36, 35, 12],
+         ....
+         '2018/12/31': [34, 35, ....,  36, 35, 12]
+      },
+      '2h00': {
+         '2018/01/01': [32, 34, 32, ...., 21, 32], # data from all stations in france.
+         '2018/01/02': [34, 35, ...., 36, 35, 12],
+         ....
+         '2018/12/31': [34, 35, ....,  36, 35, 12]
+         },
+      ... ,
+      '23h00' : {
+         '2018/01/01': [32, 34, 32, ...., 21, 32], # data from all stations in france.
+         '2018/01/02': [34, 35, ...., 36, 35, 12],
+         ....
+         '2018/12/31': [34, 35, ....,  36, 35, 12]
+         }
+      
+      }```
+* merge these data to get something like
+
+
 
 
 ## Analysis
