@@ -90,4 +90,3 @@ with open('prepared_data.csv', mode='w') as export_file:
         for k in range(len(consumptions)):
             raw = [hour, consumptions[k], temperatures[k]]
             writer.writerow(raw)
-
