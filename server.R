@@ -1,17 +1,21 @@
 library(shiny)
 
-Jour = seq(31)
-Conso = sample(x = 31)
+# install.packages("ggplot2")
+library(readxl)
 
+df = read_excel('models.xlsx')
+
+pentes <- as.numeric(df$slope)
+ordonnees <- as.numeric(df$intercept)
+heures <- as.numeric(df$hour)
+
+prevision <- function(heure,temperature) {
+  pente = pentes[heure+1]
+  ordonnee = ordonnees[heure+1]
+  return(pente*temperature + ordonnee)
+}
+
+# Création du graphique
 shinyServer(function(input, output) {
-  output$nuage <- renderPlot({
-    plot(Jour,Conso, main = "Consommation")
-  })
-
-  output$resumeTemp <- renderText({
-    paste("Moyenne Température :", mean(mtcars$mpg, na.rm = T))
-  })
-  output$resumeConso <- renderText({
-    paste("Moyenne Consommation", input$choix, ":", mean(mtcars[,input$choix], na.rm = T))
-  })
+  output$graph <- renderPlot({plot(y = prevision(heures, input$Temp),x = heures,type = 'l')})
 })
