@@ -77,5 +77,5 @@ we have 43,3 millions lines of temperature data so there were some steps of tran
 ## Analysis
 
 ## Useful information
-* after filtering all the stations by an altitude and longitude, only 39,58M lines of data out of 43,3M are valid for analysis
+* after filtering all the stations by an altitude and longitude, only 39,58M lines of data out of 43,3M are valid for analysis (these were stations in Corse)
 
