@@ -12,59 +12,51 @@ C_DATE_INDEX = 4
 # consumption data transformation
 consumptions_per_hour = {}
 
-file = open(
-    'data/eCO2mix_RTE_Annuel-Definitif_2018.csv', mode='r', encoding='utf-8'
-)
-reader = csv.reader(file, delimiter=';')
-next(reader)
-for raw in reader:
-    hour_value = raw[HOUR_INDEX]
-    if hour_value == '':
-        break
-    minutes = hour_value.split(':')[1]
-    if minutes == '00':
-        hour = int(hour_value.split(':')[0])
-        consumption = int(raw[CONSUMPTION_INDEX])
-        if consumptions_per_hour.get(hour):
-            consumptions_per_hour[hour].append(consumption)
-        else:
-            consumptions_per_hour[hour] = [consumption]
+with open('data/eCO2mix_RTE_Annuel-Definitif_2018.csv', mode='r') as file:
+    reader = csv.reader(file, delimiter=';')
+    next(reader)
+    for raw in reader:
+        hour_value = raw[HOUR_INDEX]
+        if hour_value == '':
+            break
+        minutes = hour_value.split(':')[1]
+        if minutes == '00':
+            hour = int(hour_value.split(':')[0])
+            consumption = int(raw[CONSUMPTION_INDEX])
+            if consumptions_per_hour.get(hour):
+                consumptions_per_hour[hour].append(consumption)
+            else:
+                consumptions_per_hour[hour] = [consumption]
 
 # we have a total of 365 consumptions for each hour
 
-file.close()
 
 # now let's deal with temperatures (hard level)
-file = open('filtered_stations.csv', mode='r', encoding='utf-8')
-reader = csv.reader(file, delimiter=';')
-next(reader)
-temperatures_per_hour = {}
-k = 0
-for raw in reader:
-    if not raw:
-        continue
-    k += 1
-    if k == 1_000_000_0:
-        break
-    datetime = raw[C_DATE_INDEX]
-    hour_value = datetime.split(' ')[1]
-    minutes = hour_value.split(':')[1]
-    if minutes == '00':
-        try:
-            temperature = float(raw[T_INDEX])
-        except Exception:
+with open('filtered_stations.csv', mode='r') as file:
+    reader = csv.reader(file, delimiter=';')
+    next(reader)
+    temperatures_per_hour = {}
+    for raw in reader:
+        if not raw:
             continue
-        date = datetime.split(' ')[0]
-        hour = int(hour_value.split(':')[0])
-        if temperatures_per_hour.get(hour):
-            if temperatures_per_hour[hour].get(date):
-                temperatures_per_hour[hour][date].append(temperature)
+        datetime = raw[C_DATE_INDEX]
+        hour_value = datetime.split(' ')[1]
+        minutes = hour_value.split(':')[1]
+        if minutes == '00':
+            try:
+                temperature = float(raw[T_INDEX])
+            except Exception:
+                continue
+            date = datetime.split(' ')[0]
+            hour = int(hour_value.split(':')[0])
+            if temperatures_per_hour.get(hour):
+                if temperatures_per_hour[hour].get(date):
+                    temperatures_per_hour[hour][date].append(temperature)
+                else:
+                    temperatures_per_hour[hour][date] = [temperature]
             else:
-                temperatures_per_hour[hour][date] = [temperature]
-        else:
-            temperatures_per_hour[hour] = {date: [temperature]}
+                temperatures_per_hour[hour] = {date: [temperature]}
 
-file.close()
 
 # transforming temperatures to average per day
 for hour in temperatures_per_hour.keys():
@@ -85,9 +77,17 @@ for hour in consumptions_per_hour.keys():
     }
     consumption_temperature_per_hour[hour] = averages_and_consumptions
 
+print(consumption_temperature_per_hour)
 
-# importing results in csv
-export_file = open('prepared_data.csv', mode='w')
+# importing merge results in csv
+with open('prepared_data.csv', mode='w') as export_file:
+    writer = csv.writer(export_file, delimiter=';')
+    header = ['hour', 'consumption', 'temperature']
+    for hour in consumption_temperature_per_hour.keys():
+        temperatures_and_consumptions = consumption_temperature_per_hour[hour]
+        temperatures = temperatures_and_consumptions['avg_temperatures']
+        consumptions = temperatures_and_consumptions['consumptions']
+        for k in range(len(consumptions)):
+            raw = [hour, consumptions[k], temperatures[k]]
+            writer.writerow(raw)
 
-for hour in consumption_temperature_per_hour.keys():
-    temperatures_and_consumptions = consumption_temperature_per_hour[hour]
