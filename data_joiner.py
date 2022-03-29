@@ -35,7 +35,6 @@ for raw in reader:
 file.close()
 
 # now let's deal with temperatures (hard level)
-
 file = open('filtered_stations.csv', mode='r', encoding='utf-8')
 reader = csv.reader(file, delimiter=';')
 next(reader)
@@ -45,7 +44,7 @@ for raw in reader:
     if not raw:
         continue
     k += 1
-    if k == 1_000_000:
+    if k == 1_000_000_0:
         break
     datetime = raw[C_DATE_INDEX]
     hour_value = datetime.split(' ')[1]
@@ -64,3 +63,31 @@ for raw in reader:
                 temperatures_per_hour[hour][date] = [temperature]
         else:
             temperatures_per_hour[hour] = {date: [temperature]}
+
+file.close()
+
+# transforming temperatures to average per day
+for hour in temperatures_per_hour.keys():
+    for date in temperatures_per_hour[hour].keys():
+        temperatures = temperatures_per_hour[hour][date]
+        temperatures_per_hour[hour][date] = sum(temperatures)/len(temperatures)
+
+# merging two dicts
+consumption_temperature_per_hour = {}
+for hour in consumptions_per_hour.keys():
+    consumptions = consumptions_per_hour[hour]
+    averages = []
+    for temperature in temperatures_per_hour[hour].values():
+        averages.append(temperature)
+    averages_and_consumptions = {
+        'consumptions': consumptions,
+        'avg_temperatures': averages
+    }
+    consumption_temperature_per_hour[hour] = averages_and_consumptions
+
+
+# importing results in csv
+export_file = open('prepared_data.csv', mode='w')
+
+for hour in consumption_temperature_per_hour.keys():
+    temperatures_and_consumptions = consumption_temperature_per_hour[hour]
