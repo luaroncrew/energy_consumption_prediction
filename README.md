@@ -21,7 +21,7 @@ What was the working plan?
 
 * find a data for weather conditions and energy consumption
 * merge all the data in one csv file (JOIN) 
-* make a mathematical model for consumption based on this data
+* make a mathematical model for each hour consumption based on this data
 * some frontend development: a very simple interface on R to allow people to interact with model
 
 
@@ -61,12 +61,21 @@ we have 43,3 millions lines of temperature data so there were some steps of tran
       
       }```
 * merge these data to get something like
-
-
-
-
+   ```python consumption_temperature_per_hour = {
+      0: {'cons' = [12,123,213,213,...,213],
+         'temp' = [1123,213,21,213,..., 213]
+        },
+      1: {'cons' = [12,123,213,213,...,213],
+         'temp' = [1123,213,21,213,..., 213]
+        },
+      ...
+      23: `{'cons' = [12,123,213,213,...,213],
+         'temp' = [1123,213,21,213,..., 213]
+        }
+      }
+* export this data in csv-file
 ## Analysis
 
 ## Useful information
-* after filtering all the stations by an altitude and longitude, only 39,58M out of 43,3M are valid for analysis
+* after filtering all the stations by an altitude and longitude, only 39,58M lines of data out of 43,3M are valid for analysis
 
