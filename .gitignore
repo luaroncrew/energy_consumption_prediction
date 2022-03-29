@@ -127,3 +127,5 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+.Rproj.user
+/energy_consumption_prediction.Rproj
